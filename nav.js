@@ -1,35 +1,55 @@
-<script>
-// --- 心灯サイト共通リンク設定（ここだけ直せば3サイトが連動）---
-window.KOKOROBI_SITES = {
-  project: "https://kokorobi-project.vercel.app",
-  fortune: "https://kokorobi-fortune-web.vercel.app",
-  books:   "https://kokorobi-books.vercel.app"
-};
-
-
-// 共通ナビを生成
+// ===============================
+// 心灯ナビゲーション共通スクリプト
+// ===============================
 function kokorobiNav(active) {
-  const u = window.KOKOROBI_SITES;
+  const links = [
+    { id: 'home', label: '🌕 心灯フォーチュン', url: 'https://kokorobi-project.vercel.app' },
+    { id: 'books', label: '📖 心灯ブックス', url: 'https://kokorobi-books.vercel.app' },
+    { id: 'gallery', label: '🌌 ギャラリー井門', url: 'https://open-imon.vercel.app' }
+  ];
+
+  const navItems = links
+    .map(l => `
+      <a href="${l.url}" class="kb-nav-item ${l.id === active ? 'active' : ''}">
+        ${l.label}
+      </a>
+    `)
+    .join('');
+
   return `
-  <nav class="kb-nav" aria-label="グローバル">
-    <a href="${u.project}" ${active==='project'?'aria-current="page"':''}>心灯プロジェクト</a>
-    <a href="${u.fortune}" ${active==='fortune'?'aria-current="page"':''}>心灯流占い</a>
-    <a href="${u.books}"   ${active==='books'  ?'aria-current="page"':''}>心灯ブックス</a>
-  </nav>`;
+  <nav class="kb-nav">
+    ${navItems}
+  </nav>
+  <style>
+    .kb-nav {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:1.2em;
+      background:rgba(255,255,255,.05);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      padding:10px 12px;
+      flex-wrap:wrap;
+    }
+    .kb-nav-item {
+      color:#ffd780;
+      text-decoration:none;
+      font-size:15px;
+      letter-spacing:.05em;
+      transition:.25s;
+    }
+    .kb-nav-item:hover {
+      color:#fff3d0;
+    }
+    .kb-nav-item.active {
+      color:#fff;
+      font-weight:600;
+      border-bottom:2px solid #ffd780;
+      padding-bottom:2px;
+    }
+  </style>
+  `;
 }
 
-// シンプルな共通スタイル
-(function addKBStyles(){
-  const css = `
-  .kb-nav{display:flex;gap:14px;flex-wrap:wrap;align-items:center;
-    padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.12);
-    background:linear-gradient(180deg,rgba(255,215,128,.06),transparent);
-    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif}
-  .kb-nav a{color:#ffd780;text-decoration:none;padding:6px 10px;border-radius:8px;
-    border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06)}
-  .kb-nav a:hover{background:rgba(255,255,255,.12)}
-  .kb-nav a[aria-current="page"]{outline:2px solid #ffd780}
-  `;
-  const s=document.createElement('style'); s.textContent=css; document.head.appendChild(s);
-})();
-</script>
+// グローバル公開（これが重要！）
+window.kokorobiNav = kokorobiNav;
