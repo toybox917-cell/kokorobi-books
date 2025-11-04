@@ -1,1 +1,116 @@
-<h1>Hello kokorobi books</h1>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>心灯ブックス｜月の修理屋 – 絵本ビューア</title>
+<style>
+:root{--bg:#0e1a2b;--ink:#f4f2ec;--gold:#ffd780;--muted:#5c7263;--card:#111a2c}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif}
+.app{display:grid;grid-template-rows:auto 1fr auto;min-height:100dvh}
+header,footer{padding:10px 16px;background:linear-gradient(180deg,rgba(255,215,128,.05),transparent)}
+header h1{font-size:16px;margin:0;font-weight:600;letter-spacing:.04em}
+.viewer{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;padding:16px;max-width:1100px;margin:0 auto}
+.art,.text{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden}
+.art figure{margin:0;height:100%;display:grid;place-items:center;background:radial-gradient(1200px 600px at 50% -200px, rgba(255,215,128,.08), transparent 50%)}
+.art img{max-width:100%;max-height:70vh;object-fit:contain;display:block}
+.text{display:flex;flex-direction:column}
+.meta{display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06);padding:12px 14px;background:linear-gradient(180deg,rgba(255,215,128,.05),transparent)}
+.pill{font-size:12px;padding:4px 10px;border:1px solid rgba(255,255,255,.2);border-radius:999px}
+.pageNo{margin-left:auto;opacity:.8}
+.content{padding:16px 18px 20px;line-height:1.9;font-size:18px;letter-spacing:.02em}
+.nav{display:flex;gap:12px;justify-content:center;padding:10px 16px}
+.nav button{appearance:none;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:var(--ink);padding:10px 14px;border-radius:12px;cursor:pointer;font-size:16px}
+.nav button:hover{background:rgba(255,255,255,.12)}
+.progress{height:6px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin:6px 0 0}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--gold),#ffe7b3);transition:width .25s}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:8px;margin:8px 16px 16px}
+.thumbs button{padding:0;border:none;background:transparent;cursor:pointer;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.12)}
+.thumbs img{width:100%;height:72px;object-fit:cover;display:block;filter:saturate(.9)}
+.thumbs button[aria-current="true"]{outline:2px solid var(--gold)}
+footer{font-size:12px;opacity:.8}
+.row{display:flex;gap:12px;align-items:center}
+@media (max-width:900px){.viewer{grid-template-columns:1fr}.art img{max-height:46vh}.content{font-size:17px}header h1{font-size:15px}}
+</style>
+</head>
+<body>
+<div class="app" role="application" aria-label="絵本ビューア">
+  <header>
+    <div class="row">
+      <h1>心灯ブックス｜<small>光の修理屋たち Vol.1</small> 月の修理屋</h1>
+      <div style="margin-left:auto;opacity:.8">← / → キー・スワイプでページ移動</div>
+    </div>
+    <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
+  </header>
+
+  <main class="viewer">
+    <section class="art" aria-labelledby="imgLabel">
+      <figure><img id="pageImg" alt="ページイラスト" loading="lazy" /></figure>
+    </section>
+    <section class="text" aria-labelledby="txtLabel">
+      <div class="meta">
+        <span id="imgLabel" class="pill">イラスト</span>
+        <span id="txtLabel" class="pill">テキスト</span>
+        <span class="pageNo" id="counter">1 / 18</span>
+      </div>
+      <div class="content" id="pageText" aria-live="polite"></div>
+      <div class="nav">
+        <button id="prev" aria-label="前のページ">← 前へ</button>
+        <button id="next" aria-label="次のページ">次へ →</button>
+      </div>
+      <div class="thumbs" id="thumbs" aria-label="ページ一覧サムネイル"></div>
+    </section>
+  </main>
+
+  <footer>心灯ブックス（Kokorobi Books）— 「理で導き、優しさで包む」</footer>
+</div>
+
+<script>
+const PAGES=[
+{ text:"夜が、静かに泣いていました。" },
+{ text:"月の涙が、森に落ちています。" },
+{ text:"少年アサヒは、それを見つけました。" },
+{ text:"「月さん、どうして泣いてるの？」" },
+{ text:"「心が冷たくなって、鏡が凍ったの。」" },
+{ text:"アサヒは考えました。" },
+{ text:"「ぼくの笑顔で直してみる。」" },
+{ text:"光の粒が、手のひらで揺れました。" },
+{ text:"月が少し、明るくなりました。" },
+{ text:"「あたたかいね」と月が言いました。" },
+{ text:"月はまんまるに戻りました。" },
+{ text:"アサヒはそっと目を閉じました。" },
+{ text:"夜がやさしく息をしました。" },
+{ text:"「光を直す修理屋が生まれた。」" },
+{ text:"あとがき：壊れたものを直すのは、道具ではなく、心の温度。" },
+{ text:"心灯の言葉：やさしさは、伝わると光になる。" },
+{ text:"奥付：心灯ブックス（Kokorobi Books）" },
+{ text:"表紙裏：この本を開いたあなたへ、ありがとう。" }
+];
+const imgPath=i=>`/images/page${String(i+1).padStart(2,'0')}.jpg`;
+let current=0;
+const img=document.getElementById('pageImg');
+const txt=document.getElementById('pageText');
+const counter=document.getElementById('counter');
+const bar=document.getElementById('bar');
+const thumbs=document.getElementById('thumbs');
+function render(i){
+  current=Math.max(0,Math.min(PAGES.length-1,i));
+  img.src=imgPath(current);
+  img.alt=`ページ${current+1}のイラスト`;
+  txt.innerHTML=`<p>${PAGES[current].text}</p>`;
+  counter.textContent=`${current+1} / ${PAGES.length}`;
+  bar.style.width=`${((current+1)/PAGES.length)*100}%`;
+  Array.from(thumbs.children).forEach((b,idx)=>b.setAttribute('aria-current', idx===current ? 'true' : 'false'));
+  const pre=new Image(); pre.src=imgPath(Math.min(PAGES.length-1,current+1));
+}
+function go(n){render(current+n)}
+document.getElementById('prev').addEventListener('click',()=>go(-1));
+document.getElementById('next').addEventListener('click',()=>go(1));
+window.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+let sx=0,sy=0;
+window.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+window.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;const dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy))go(dx<0?1:-1);},{passive:true});
+function buildThumbs(){PAGES.forEach((_,i)=>{const b=document.createElement('button');b.title=`ページ${i+1}`;const t=document.createElement('img');t.loading='lazy';t.src=imgPath(i);t.alt=`ページ${i+1}のサムネイル`;b.appendChild(t);b.addEventListener('click',()=>render(i));thumbs.appendChild(b);});}
+buildThumbs();render(0);
+</script>
+</body></html>
