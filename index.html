@@ -32,11 +32,17 @@ footer{font-size:12px;opacity:.8}
 .row{display:flex;gap:12px;align-items:center}
 @media (max-width:900px){.viewer{grid-template-columns:1fr}.art img{max-height:46vh}.content{font-size:17px}header h1{font-size:15px}}
 </style>
+<script src="nav.js?v=2" defer></script>
 </head>
 <body>
-  <script src="nav.js"></script>
 <div id="kb-nav-wrap"></div>
-<script>document.getElementById('kb-nav-wrap').innerHTML = kokorobiNav('books');</script>
+<script>
+window.addEventListener('DOMContentLoaded', function(){
+  const el=document.getElementById('kb-nav-wrap');
+  if(window.kokorobiNav && el) el.innerHTML=window.kokorobiNav('books');
+});
+</script>
+
 <div class="app" role="application" aria-label="絵本ビューア">
   <header>
     <div class="row">
@@ -116,4 +122,5 @@ window.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;c
 function buildThumbs(){PAGES.forEach((_,i)=>{const b=document.createElement('button');b.title=`ページ${i+1}`;const t=document.createElement('img');t.loading='lazy';t.src=imgPath(i);t.alt=`ページ${i+1}のサムネイル`;b.appendChild(t);b.addEventListener('click',()=>render(i));thumbs.appendChild(b);});}
 buildThumbs();render(0);
 </script>
-</body></html>
+</body>
+</html>
