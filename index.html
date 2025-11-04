@@ -32,17 +32,25 @@ footer{font-size:12px;opacity:.8}
 .row{display:flex;gap:12px;align-items:center}
 @media (max-width:900px){.viewer{grid-template-columns:1fr}.art img{max-height:46vh}.content{font-size:17px}header h1{font-size:15px}}
 </style>
-<script src="nav.js?v=2" defer></script>
+
+<!-- 🌕 ここで nav.js を確実に読み込み -->
+<script src="nav.js?v=5" defer></script>
 </head>
 <body>
+
+<!-- 🌙 ナビゲーションを後から描画 -->
 <div id="kb-nav-wrap"></div>
 <script>
-window.addEventListener('DOMContentLoaded', function(){
-  const el=document.getElementById('kb-nav-wrap');
-  if(window.kokorobiNav && el) el.innerHTML=window.kokorobiNav('books');
-});
+(function waitForNav(){
+  if (window.kokorobiNav) {
+    document.getElementById('kb-nav-wrap').innerHTML = window.kokorobiNav('books');
+  } else {
+    setTimeout(waitForNav, 50);
+  }
+})();
 </script>
 
+<!-- 🌌 絵本本体 -->
 <div class="app" role="application" aria-label="絵本ビューア">
   <header>
     <div class="row">
@@ -74,6 +82,7 @@ window.addEventListener('DOMContentLoaded', function(){
   <footer>心灯ブックス（Kokorobi Books）— 「理で導き、優しさで包む」</footer>
 </div>
 
+<!-- 🌠 ページ切り替えスクリプト -->
 <script>
 const PAGES=[
 { text:"夜が、静かに泣いていました。" },
